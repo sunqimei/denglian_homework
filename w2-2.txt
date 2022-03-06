@@ -1,0 +1,32 @@
+// SPDX-License-Identifier: GPL-3.0
+
+pragma solidity >=0.7.0 <0.9.0;
+
+contract Score {
+    mapping (address => uint) Scores;
+    function addOrChange(address _studentAddress, uint _score) external {
+        Scores[_studentAddress] = _score;
+    }
+}
+
+contract IScore {
+    function addOrChange(address _studentAddress, uint _score) external;
+}
+contract Teacher {
+    IScore scoreContract;
+
+    mapping (address => string) teachers;
+    modifier isTeacher() {
+        require(teachers[msg.sender]);        
+        _;
+    }
+    function setTeacher(address _address, string _name) {
+        teachers[_address] = _name;
+    }
+    function setIScoreContract(address _address) external {
+        scoreContract = IScore(_address);
+    }
+    function addOrChange(address _studentAddress, uint _score) external isTeacher() {
+        IScoreContract.addOrChange(_studentAddress, _score);
+    }
+}
